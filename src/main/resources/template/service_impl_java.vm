@@ -1,0 +1,25 @@
+#set($primaryName = $util.camelize($primaryField))
+#set($pkType = $util.thinType($primaryFieldType)) 
+#set($lowerFirstPojoName = $util.lowerCaseFirst($pojoName)) 
+package $pkgName;
+
+import org.springframework.stereotype.Service;
+
+import com.unismartcore.aps.service.${pojoName}Service;
+import com.unismartcore.aps.service.base.BaseService;
+
+
+/**
+ * ${pojoName}Service interface implementation
+ * @author HanJunTao
+ */
+
+@Service("${lowerFirstPojoName}Service")
+public class ${pojoName}ServiceImpl extends BaseService implements ${pojoName}Service {
+
+	private static final String MAPPER_NAME_SAPCE = "$pojoName.";
+
+	public String getNamespace() {
+		return MAPPER_NAME_SAPCE;
+	}
+}

@@ -1,0 +1,12 @@
+#set($pkType = $util.thinType($primaryFieldType))
+package $pkgName;
+
+import com.unismartcore.aps.service.base.DaoService;
+
+/**
+ * ${pojoName}Service interface
+ * @author HanJunTao
+ */
+
+public interface ${pojoName}Service extends DaoService{
+}
