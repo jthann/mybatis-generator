@@ -1,0 +1,25 @@
+#set($primaryName = $util.camelize(${primaryField}))
+#set($pkType = $util.thinType(${primaryFieldType}))
+#set($lowerFirstPojoName = $util.lowerCaseFirst(${pojoName}))
+package $pkgName;
+
+import com.jd.dao.UserDao;
+import com.jd.dao.base.BaseDao;
+import com.jd.domain.User;
+import org.springframework.stereotype.Component;
+
+/**
+* Created by Velocity Template.
+* @author HanJunTao
+*/
+@Component("${lowerFirstPojoName}Dao")
+public class ${pojoName}DaoImpl extends BaseDao<${pojoName}, ${pkType}> implements UserDao {
+
+private static final String NAMESPACE = "com.jd.jdc.dao.User";
+
+@Override
+public String getNameSpace(String statementId) {
+return NAMESPACE + "." + statementId;
+}
+
+}

@@ -1,204 +1,209 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-#set($primaryName =	$util.camelize($primaryField))
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    #set($primaryName =    $util.camelize($primaryField))
 <mapper namespace="$pojoName">
-  <!--com.unismartcore.aps.bean.${pojoName}-->
-  <resultMap id="${pojoName}Map" type="dto">
-	#foreach($f	in $fields)
-			#set($type = $f.type)	 
-			#set($name = $f.name)	 
-			#set($fieldName	= $f.fieldName)
-	#if	($type == "Byte[]")
-	  <result property="$name" column="$fieldName" typeHandler="org.apache.ibatis.type.BlobTypeHandler"/>
-	#else
-	  <result property="$name" column="$fieldName"/>
-	#end
-	#end  	
-  </resultMap>
-  <!-- 查询条件 -->
-  <sql id="CONDITION">
-	 <trim prefix="WHERE" prefixOverrides="AND ">
-	  #foreach($f in $fields)
-		#set($type = $f.type)	 
-		#set($name = $f.name)	 
-		#set($fieldName	= $f.fieldName)
-	    #if($type == "java.lang.String")
-	      <if test="$name!=null and $name!=''">AND $fieldName = #{$name}</if>
-	    #else
-		  <if test="$name!=null">AND $fieldName = #{$name}</if>
-	    #end
-	  #end
-	 </trim>  	
-  </sql>
-  <!-- 分页条件 -->
-  <sql id="PAGING">
-     <if test="offset!=null and limit!=null">
-        LIMIT #{offset},#{limit}
-     </if>
-  </sql>
-  
-  <!-- 所有字段 -->
-  <sql id="ALL-FIELDS">
- 	<![CDATA[
-	  #foreach($f in $fields)	
-	  #set($fieldName =	$f.fieldName)
-      #if($velocityCount== $fields.size())
-		  $fieldName
-	  #else
-		  $fieldName,
-      #end
-      #end
-	]]> 	
-  </sql>
-  <!-- 单条添加 -->
-  <insert id="INSERT" parameterType="dto">
-    INSERT INTO $tableName
-    (
-     <trim suffixOverrides=",">
-      #foreach($f  in $fields)		
-		#set($type = $f.type)	 
-		#set($name = $f.name)	 
-		#set($fieldName	=	$f.fieldName)
-		#if($type == "java.lang.String")
-	     <if test="$name!=null and $name!=''">$fieldName#if($velocityCount!=$fields.size()),#end</if>
-	    #else
-	      <if test="$name!=null">$fieldName#if($velocityCount!=$fields.size()),#end</if>
-	    #end
-      #end
-      </trim>
-    )  
-    VALUES
-    (
-     <trim suffixOverrides=",">
-      #foreach($f  in $fields)		
-		#set($type = $f.type)	 
-		#set($name = $f.name)
-		#if($type == "java.lang.String")
-	     <if test="$name!=null and $name!=''">#{$name}#if($velocityCount!=$fields.size()),#end</if>
-	    #else
-	      <if test="$name!=null">#{$name}#if($velocityCount!=$fields.size()),#end</if>
-	    #end
-      #end  
-     </trim>  
-    )
-    <selectKey resultType="$primaryFieldType" keyProperty="$primaryName">
-       SELECT last_insert_id() AS ID FROM $tableName LIMIT 1
-    </selectKey>
-  </insert>
-   <!-- 批量添加 -->
-  <insert id="BATCH-INSERT" parameterType="java.util.List">
-	 <foreach collection="list" item="item" index="index" separator=";" close=";">
-	   INSERT INTO $tableName
-	    (
-	     <trim suffixOverrides=",">
-	      #foreach($f in $fields)		
-			#set($type = $f.type)	 
-			#set($name = $f.name)	 
-			#set($fieldName	=	$f.fieldName)
-			#if($type == "java.lang.String")
-		     <if test="item.$name!=null and item.$name!=''">$fieldName#if($velocityCount!=$fields.size()),#end</if>
-		    #else
-		      <if test="item.$name!=null">$fieldName#if($velocityCount!=$fields.size()),#end</if>
-		    #end
-	      #end
-	     </trim>
-	    )  
-	    VALUES
-	    (
-	      <trim suffixOverrides=",">
-	      #foreach($f  in $fields)		
-			#set($type = $f.type)	 
-			#set($name = $f.name)
-			#if($type == "java.lang.String")
-		     <if test="item.$name!=null and item.$name!=''">#{item.$name}#if($velocityCount!=$fields.size()),#end</if>
-		    #else
-		      <if test="item.$name!=null">#{item.$name}#if($velocityCount!=$fields.size()),#end</if>
-		    #end
-	      #end  
-	     </trim>  
-	    )
-	  </foreach>
-   </insert>
-  <!-- 删除 -->
-  <delete id="DELETE" parameterType="dto">
-  	 DELETE FROM $tableName 
-  	 <include refid="CONDITION"/>
-  </delete>
-  <!-- 逻辑删除 -->
-  <update id="UPDATE-DELETED" parameterType="dto">
-     UPDATE  $tableName SET deleted=1
-	 <include refid="CONDITION" />
-  </update>
-  <!-- 根据主键更新 -->
-  <update id="UPDATE" parameterType="dto">
-  	   UPDATE $tableName
-	   <set>
-      #foreach($f  in $fields)		
-		#set($type = $f.type)	 
-		#set($name = $f.name)	 
-		#set($fieldName	=	$f.fieldName)
-		#if($type == "java.lang.String")
-	     <if test="$name!=null and $name!=''">$fieldName = #{$name}#if($velocityCount!=$fields.size()),#end</if>
-	    #else
-	     <if test="$name!=null">$fieldName = #{$name}#if($velocityCount!=$fields.size()),#end</if>
-	    #end
-      #end
-	   </set>
-	   WHERE $primaryField = #{$primaryName}
-  </update>
-   <!-- 批量更新 -->
-   <update id="BATCH-UPDATE" parameterType="java.util.List">
-	  <foreach collection="list" item="item" index="index" separator=";" close=";">
-  	   UPDATE $tableName
-	   <set>
-       #foreach($f  in $fields)		
-		 #set($type = $f.type)	 
-		 #set($name = $f.name)	 
-		 #set($fieldName = $f.fieldName)
-		 #if($type == "java.lang.String")
-	      <if test="item.$name!=null and item.$name!=''">$fieldName = #{item.$name}#if($velocityCount!=$fields.size()),#end</if>
-	     #else
-	      <if test="item.$name!=null">$fieldName = #{item.$name}#if($velocityCount!=$fields.size()),#end</if>
-	     #end
-       #end
-	    </set>
-	    WHERE $primaryField = #{item.$primaryName}
-	  </foreach>   
-   </update>
-  <!-- 根据主键查询单条记录 --> 
-  <select id="FIND" resultMap="${pojoName}Map" parameterType="java.lang.Long">
-		SELECT
-		<include refid="ALL-FIELDS" />
-		FROM $tableName where $primaryField	= #{$primaryName}  
-  </select>
-  <!-- 根据条件查询 --> 
-  <select id="FIND-LIST" resultMap="${pojoName}Map" parameterType="dto">
-		SELECT
-		<include refid="ALL-FIELDS"/>
+    <!--com.unismartcore.aps.bean.${pojoName}-->
+    <resultMap id="${pojoName}Map" type="dto">
+        #foreach($f    in $fields)
+            #set($type = $f.type)
+            #set($name = $f.name)
+            #set($fieldName    = $f.fieldName)
+            #if    ($type == "Byte[]")
+                <result property="$name" column="$fieldName" typeHandler="org.apache.ibatis.type.BlobTypeHandler"/>
+            #else
+                <result property="$name" column="$fieldName"/>
+            #end
+        #end
+    </resultMap>
+    <!-- 查询条件 -->
+    <sql id="CONDITION">
+        <trim prefix="WHERE" prefixOverrides="AND ">
+            #foreach($f in $fields)
+                #set($type = $f.type)
+                #set($name = $f.name)
+                #set($fieldName    = $f.fieldName)
+                #if($type == "java.lang.String")
+                    <if test="$name!=null and $name!=''">AND $fieldName = #{$name}</if>
+                #else
+                    <if test="$name!=null">AND $fieldName = #{$name}</if>
+                #end
+            #end
+        </trim>
+    </sql>
+    <!-- 分页条件 -->
+    <sql id="PAGING">
+        <if test="offset!=null and limit!=null">
+            LIMIT #{offset},#{limit}
+        </if>
+    </sql>
+
+    <!-- 所有字段 -->
+    <sql id="ALL-FIELDS">
+        <![CDATA[
+        #foreach($f in $fields)
+            #set($fieldName =    $f.fieldName)
+            #if($velocityCount== $fields.size())
+                $fieldName
+            #else
+                $fieldName,
+            #end
+        #end
+        ]]>
+    </sql>
+    <!-- 单条添加 -->
+    <insert id="INSERT" parameterType="dto">
+        INSERT INTO $tableName
+        (
+        <trim suffixOverrides=",">
+            #foreach($f  in $fields)
+                #set($type = $f.type)
+                #set($name = $f.name)
+                #set($fieldName    =    $f.fieldName)
+                #if($type == "java.lang.String")
+                    <if test="$name!=null and $name!=''">$fieldName#if($velocityCount!=$fields.size()),#end</if>
+                #else
+                    <if test="$name!=null">$fieldName#if($velocityCount!=$fields.size()),#end</if>
+                #end
+            #end
+        </trim>
+        )
+        VALUES
+        (
+        <trim suffixOverrides=",">
+            #foreach($f  in $fields)
+                #set($type = $f.type)
+                #set($name = $f.name)
+                #if($type == "java.lang.String")
+                    <if test="$name!=null and $name!=''">#{$name}#if($velocityCount!=$fields.size()),#end</if>
+                #else
+                    <if test="$name!=null">#{$name}#if($velocityCount!=$fields.size()),#end</if>
+                #end
+            #end
+        </trim>
+        )
+        <selectKey resultType="$primaryFieldType" keyProperty="$primaryName">
+            SELECT last_insert_id() AS ID FROM $tableName LIMIT 1
+        </selectKey>
+    </insert>
+    <!-- 批量添加 -->
+    <insert id="BATCH-INSERT" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" separator=";" close=";">
+            INSERT INTO $tableName
+            (
+            <trim suffixOverrides=",">
+                #foreach($f in $fields)
+                    #set($type = $f.type)
+                    #set($name = $f.name)
+                    #set($fieldName    =    $f.fieldName)
+                    #if($type == "java.lang.String")
+                        <if test="item.$name!=null and item.$name!=''">$fieldName#if($velocityCount!=$fields.size())
+                            ,#end</if>
+                    #else
+                        <if test="item.$name!=null">$fieldName#if($velocityCount!=$fields.size()),#end</if>
+                    #end
+                #end
+            </trim>
+            )
+            VALUES
+            (
+            <trim suffixOverrides=",">
+                #foreach($f  in $fields)
+                    #set($type = $f.type)
+                    #set($name = $f.name)
+                    #if($type == "java.lang.String")
+                        <if test="item.$name!=null and item.$name!=''">#{item.$name}#if($velocityCount!=$fields.size())
+                            ,#end</if>
+                    #else
+                        <if test="item.$name!=null">#{item.$name}#if($velocityCount!=$fields.size()),#end</if>
+                    #end
+                #end
+            </trim>
+            )
+        </foreach>
+    </insert>
+    <!-- 删除 -->
+    <delete id="DELETE" parameterType="dto">
+        DELETE FROM $tableName
+        <include refid="CONDITION"/>
+    </delete>
+    <!-- 逻辑删除 -->
+    <update id="UPDATE-DELETED" parameterType="dto">
+        UPDATE  $tableName SET deleted=1
+        <include refid="CONDITION"/>
+    </update>
+    <!-- 根据主键更新 -->
+    <update id="UPDATE" parameterType="dto">
+        UPDATE $tableName
+        <set>
+            #foreach($f  in $fields)
+                #set($type = $f.type)
+                #set($name = $f.name)
+                #set($fieldName    =    $f.fieldName)
+                #if($type == "java.lang.String")
+                    <if test="$name!=null and $name!=''">$fieldName = #{$name}#if($velocityCount!=$fields.size())
+                        ,#end</if>
+                #else
+                    <if test="$name!=null">$fieldName = #{$name}#if($velocityCount!=$fields.size()),#end</if>
+                #end
+            #end
+        </set>
+        WHERE $primaryField = #{$primaryName}
+    </update>
+    <!-- 批量更新 -->
+    <update id="BATCH-UPDATE" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" separator=";" close=";">
+            UPDATE $tableName
+            <set>
+                #foreach($f  in $fields)
+                    #set($type = $f.type)
+                    #set($name = $f.name)
+                    #set($fieldName = $f.fieldName)
+                    #if($type == "java.lang.String")
+                        <if test="item.$name!=null and item.$name!=''">$fieldName =
+                            #{item.$name}#if($velocityCount!=$fields.size()),#end</if>
+                    #else
+                        <if test="item.$name!=null">$fieldName = #{item.$name}#if($velocityCount!=$fields.size())
+                            ,#end</if>
+                    #end
+                #end
+            </set>
+            WHERE $primaryField = #{item.$primaryName}
+        </foreach>
+    </update>
+    <!-- 根据主键查询单条记录 -->
+    <select id="SELECT" resultMap="${pojoName}Map" parameterType="java.lang.Long">
+        SELECT
+        <include refid="ALL-FIELDS"/>
+        FROM $tableName where $primaryField = #{$primaryName}
+    </select>
+    <!-- 根据条件查询 -->
+    <select id="SELECT-LIST" resultMap="${pojoName}Map" parameterType="dto">
+        SELECT
+        <include refid="ALL-FIELDS"/>
         FROM $tableName
         <include refid="CONDITION"/>
-   </select>
-   <!-- 分页查询 -->    
-   <select id="FIND-PAGING" resultMap="${pojoName}Map" parameterType="dto">
-      SELECT 
-       <include refid="ALL-FIELDS" />
-	  FROM $tableName
-	  <include refid="CONDITION"	/>
-	  <include refid="PAGING" />
-	</select>
-	<select	id="COUNT"	resultType="java.lang.Integer" parameterType="dto">
-	  SELECT COUNT(*) FROM $tableName
-	  <include refid="CONDITION"/>	
-   </select>
-   <!--根据ID列表查询-->
-   <select id="FIND-IN-LIST" resultMap="${pojoName}Map" parameterType="list">
-		SELECT 
-		<include refid="ALL-FIELDS"/>
-		FROM $tableName
-		WHERE $primaryName IN
-		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
-			#{item}
-		</foreach>
-   </select>
+    </select>
+    <!-- 分页查询 -->
+    <select id="SELECT-PAGING-LIST" resultMap="${pojoName}Map" parameterType="dto">
+        SELECT
+        <include refid="ALL-FIELDS"/>
+        FROM $tableName
+        <include refid="CONDITION"/>
+        <include refid="PAGING"/>
+    </select>
+    <select id="COUNT" resultType="java.lang.Integer" parameterType="dto">
+        SELECT COUNT(*) FROM $tableName
+        <include refid="CONDITION"/>
+    </select>
+    <!--根据ID列表查询-->
+    <select id="SELECT-IN-LIST" resultMap="${pojoName}Map" parameterType="list">
+        SELECT
+        <include refid="ALL-FIELDS"/>
+        FROM $tableName
+        WHERE $primaryName IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

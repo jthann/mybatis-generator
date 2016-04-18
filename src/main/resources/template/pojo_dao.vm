@@ -1,0 +1,11 @@
+#set($primaryName = $util.camelize($primaryField))
+#set($pkType = $util.thinType($primaryFieldType))
+#set($lowerFirstPojoName = $util.lowerCaseFirst($pojoName))
+import com.jd.dao.base.IDao;
+import com.jd.domain.User;
+
+/**
+* Created by hanjuntao on 2016/4/18.
+*/
+public interface ${pojoName}Dao extends IDao<${pojoName}, Integer> {
+}
