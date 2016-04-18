@@ -1,6 +1,6 @@
 package $pkgName;
-#set($lowerFirstPojoName = $util.lowerCaseFirst($pojoName)) 
-#set($pkType = $util.thinType($primaryFieldType))  
+#set($lowerFirstPojoName = $util.lowerCaseFirst($pojoName))
+#set($pkType = $util.thinType($primaryFieldType))
 #foreach($type in $util.importType($fields))
 import $type;
 #end
@@ -8,105 +8,76 @@ import $type;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import com.unismartcore.aps.bean.base.BaseBean;
-import com.unismartcore.plaf.meta.Dto;
-import com.unismartcore.plaf.meta.impl.MapDto;
-
 #set( $baseFields = "id,creator,gmtCreated,modifier,gmtModified,deleted,")
 
 /**
- *
- * ${pojoName} POJO 
- * @author HanJunTao
- *
- */
-@JsonInclude(Include.NON_EMPTY)
-public class ${pojoName} extends BaseBean{
+*
+* ${pojoName} POJO
+* @author HanJunTao
+*
+*/
+public class ${pojoName} implements Serializable{
 #foreach($f in $fields)
-  #set($comment = $f.comment)
-    #set($type = $util.thinType($f.type)) 
+    #set($comment = $f.comment)
+    #set($type = $util.thinType($f.type))
     #if  ($type=="BigInteger" || $type=="java.math.BigInteger")
-       #set($type="Long") 
-	#end
-    #set($name = $f.name)   
+        #set($type="Long")
+    #end
+    #set($name = $f.name)
     #set($comment = $f.comment)
     #if($baseFields.indexOf("$name,") == -1)
-    @JsonProperty
     private $type $name;
     #end
 #end
 
 
-    
-    public static interface ObjField {
-		#foreach($f in $fields)
-   #set($name = $f.name) 
-   #if($baseFields.indexOf("$name,") == -1)
+
+public static interface ObjField {
+#foreach($f in $fields)
+    #set($name = $f.name)
+    #if($baseFields.indexOf("$name,") == -1)
     public String $name = "$name";
     #end
-		#end
-	}
-	public static enum DBField  {
-		#foreach($f	in $fields)
-		#set($type = $f.type)	 
-		#set($name = $f.name)	 
-		#set($fieldName	=	$f.fieldName)
-		#if($baseFields.indexOf("$name,") == -1)
-    $fieldName,
+#end
+}
+public static enum DBField  {
+#foreach($f    in $fields)
+    #set($type = $f.type)
+    #set($name = $f.name)
+    #set($fieldName    =    $f.fieldName)
+    #if($baseFields.indexOf("$name,") == -1)
+        $fieldName,
     #end
 #end
-	}
- 
+}
+
 #foreach($f in $fields)
-		
-     #set($type = $util.thinType($f.type)) 
-      #if  ($type=="BigInteger" || $type=="java.math.BigInteger")
-       #set($type="Long") 
-	#end  
-    #set($name = $f.name)   
+
+    #set($type = $util.thinType($f.type))
+    #if  ($type=="BigInteger" || $type=="java.math.BigInteger")
+        #set($type="Long")
+    #end
+    #set($name = $f.name)
     #set($comment = $f.comment)
     #if($baseFields.indexOf("$name,") == -1)
 
     public $type get$util.upperCaseFirst($name)() {
-        return this.$name;
-    }	
-  
-    public void set$util.upperCaseFirst($name)($type $name) {
-        this.$name = $name;
+    return this.$name;
     }
-#end
+
+    public void set$util.upperCaseFirst($name)($type $name) {
+    this.$name = $name;
+    }
+    #end
 #end
 
-	public static ${pojoName} to${pojoName}(${pojoName} ${lowerFirstPojoName}Pojo) {
-        ${pojoName} ${lowerFirstPojoName} = new ${pojoName}();
-        #foreach($f in $fields)
-       			 #set($name = $f.name) 
-						${lowerFirstPojoName}.set$util.upperCaseFirst($name)(${lowerFirstPojoName}Pojo.get$util.upperCaseFirst($name)());
-				#end
-        return ${lowerFirstPojoName};
-    }
-	public static Dto toDto(${pojoName} ${lowerFirstPojoName}Pojo){
-		return objMapper.convertValue(${lowerFirstPojoName}Pojo, MapDto.class);
-	}
-	public static ${pojoName} to${pojoName}(Dto dtoObj){
-		return objMapper.convertValue(dtoObj,${pojoName}.class);
-	}
-    public static List<${pojoName}> to${pojoName}List(List<${pojoName}> ${lowerFirstPojoName}List) {
-        List<${pojoName}> retList = new ArrayList<${pojoName}>();
-        for (${pojoName} ${lowerFirstPojoName} : ${lowerFirstPojoName}List) {
-            retList.add(to${pojoName}(${lowerFirstPojoName}));
-        }
-        return retList;
-    }
-    	public static List<Dto> toDtoList(List<${pojoName}> ${lowerFirstPojoName}List){
-		List<Dto> objList = new ArrayList<Dto>();
-		for (${pojoName} ${lowerFirstPojoName} : ${lowerFirstPojoName}List) {
-			objList.add(toDto(${lowerFirstPojoName}));
-		}
-		return objList;
-	}
+public static ${pojoName} to${pojoName}(${pojoName} ${lowerFirstPojoName}Pojo) {
+${pojoName} ${lowerFirstPojoName} = new ${pojoName}();
+#foreach($f in $fields)
+    #set($name = $f.name)
+    ${lowerFirstPojoName}.set$util.upperCaseFirst($name)(${lowerFirstPojoName}Pojo.get$util.upperCaseFirst($name)());
+#end
+return ${lowerFirstPojoName};
+}
+
 }

@@ -58,6 +58,7 @@ public class SchemaLoader {
             }
         } catch (Exception e) {
             logger.error("加载表元数据发生错误!", e);
+            throw new RuntimeException(e);
         } finally {
             releaseConnection(conn, stmt, rs);
         }

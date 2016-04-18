@@ -29,7 +29,7 @@
     </templates>
     <jdbc>
         <driver>com.mysql.jdbc.Driver</driver>
-        <url>jdbc:mysql://127.0.0.1:3306/aps_mes?useUnicode=true&amp;characterEncoding=UTF-8</url>
+        <url>jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&amp;characterEncoding=UTF-8</url>
         <username>root</username>
         <password>hanjuntao</password>
     </jdbc>
