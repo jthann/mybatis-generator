@@ -8,10 +8,6 @@ import javax.ws.rs.Path;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.unismartcore.aps.resource.base.BaseResource;
-import com.unismartcore.aps.service.${pojoName}Service;
-
-
 /**
  * ${pojoName}Resource
  * @author HanJunTao

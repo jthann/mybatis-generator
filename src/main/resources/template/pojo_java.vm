@@ -1,4 +1,4 @@
-package $pkgName;
+package ${pkgName};
 #set($lowerFirstPojoName = $util.lowerCaseFirst($pojoName))
 #set($pkType = $util.thinType($primaryFieldType))
 #foreach($type in $util.importType($fields))

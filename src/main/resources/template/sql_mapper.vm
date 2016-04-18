@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-    #set($primaryName =    $util.camelize($primaryField))
+    #set($primaryName = $util.camelize($primaryField))
+    #set($lowerFirstPojoName = $util.lowerCaseFirst($pojoName))
 <mapper namespace="$pojoName">
-    <!--com.unismartcore.aps.bean.${pojoName}-->
-    <resultMap id="${pojoName}Map" type="dto">
+    <resultMap id="${pojoName}Map" type="${pkgName}.${pojoName}">
         #foreach($f    in $fields)
             #set($type = $f.type)
             #set($name = $f.name)
@@ -123,17 +123,17 @@
         </foreach>
     </insert>
     <!-- 删除 -->
-    <delete id="DELETE" parameterType="dto">
+    <delete id="DELETE" parameterType="${lowerFirstPojoName}">
         DELETE FROM $tableName
         <include refid="CONDITION"/>
     </delete>
     <!-- 逻辑删除 -->
-    <update id="UPDATE-DELETED" parameterType="dto">
+    <update id="UPDATE-DELETED" parameterType="${lowerFirstPojoName}">
         UPDATE  $tableName SET deleted=1
         <include refid="CONDITION"/>
     </update>
     <!-- 根据主键更新 -->
-    <update id="UPDATE" parameterType="dto">
+    <update id="UPDATE" parameterType="${lowerFirstPojoName}">
         UPDATE $tableName
         <set>
             #foreach($f  in $fields)
@@ -172,32 +172,32 @@
         </foreach>
     </update>
     <!-- 根据主键查询单条记录 -->
-    <select id="SELECT" resultMap="${pojoName}Map" parameterType="java.lang.Long">
+    <select id="SELECT" resultType="${lowerFirstPojoName}" parameterType="${pkType}">
         SELECT
         <include refid="ALL-FIELDS"/>
         FROM $tableName where $primaryField = #{$primaryName}
     </select>
     <!-- 根据条件查询 -->
-    <select id="SELECT-LIST" resultMap="${pojoName}Map" parameterType="dto">
+    <select id="SELECT-LIST" resultType="${lowerFirstPojoName}" parameterType="${lowerFirstPojoName}">
         SELECT
         <include refid="ALL-FIELDS"/>
         FROM $tableName
         <include refid="CONDITION"/>
     </select>
     <!-- 分页查询 -->
-    <select id="SELECT-PAGING-LIST" resultMap="${pojoName}Map" parameterType="dto">
+    <select id="SELECT-PAGING-LIST" resultType="${lowerFirstPojoName}" parameterType="${lowerFirstPojoName}">
         SELECT
         <include refid="ALL-FIELDS"/>
         FROM $tableName
         <include refid="CONDITION"/>
         <include refid="PAGING"/>
     </select>
-    <select id="COUNT" resultType="java.lang.Integer" parameterType="dto">
+    <select id="COUNT" resultType="java.lang.Integer" parameterType="${lowerFirstPojoName}">
         SELECT COUNT(*) FROM $tableName
         <include refid="CONDITION"/>
     </select>
     <!--根据ID列表查询-->
-    <select id="SELECT-IN-LIST" resultMap="${pojoName}Map" parameterType="list">
+    <select id="SELECT-IN-LIST" resultType="${lowerFirstPojoName}" parameterType="list">
         SELECT
         <include refid="ALL-FIELDS"/>
         FROM $tableName
