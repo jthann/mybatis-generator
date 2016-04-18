@@ -4,11 +4,13 @@ package ${pkgName};
 #foreach($type in $util.importType($fields))
 import $type;
 #end
+import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-#set( $baseFields = "id,creator,gmtCreated,modifier,gmtModified,deleted,")
+###set( $baseFields = "id,creator,gmtCreated,modifier,gmtModified,deleted,")
+#set( $baseFields = "")
 
 /**
 *
@@ -32,25 +34,6 @@ public class ${pojoName} implements Serializable{
 
 
 
-public static interface ObjField {
-#foreach($f in $fields)
-    #set($name = $f.name)
-    #if($baseFields.indexOf("$name,") == -1)
-    public String $name = "$name";
-    #end
-#end
-}
-public static enum DBField  {
-#foreach($f    in $fields)
-    #set($type = $f.type)
-    #set($name = $f.name)
-    #set($fieldName    =    $f.fieldName)
-    #if($baseFields.indexOf("$name,") == -1)
-        $fieldName,
-    #end
-#end
-}
-
 #foreach($f in $fields)
 
     #set($type = $util.thinType($f.type))
@@ -70,14 +53,5 @@ public static enum DBField  {
     }
     #end
 #end
-
-public static ${pojoName} to${pojoName}(${pojoName} ${lowerFirstPojoName}Pojo) {
-${pojoName} ${lowerFirstPojoName} = new ${pojoName}();
-#foreach($f in $fields)
-    #set($name = $f.name)
-    ${lowerFirstPojoName}.set$util.upperCaseFirst($name)(${lowerFirstPojoName}Pojo.get$util.upperCaseFirst($name)());
-#end
-return ${lowerFirstPojoName};
-}
 
 }

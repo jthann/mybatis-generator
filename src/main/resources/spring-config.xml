@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- BasicDataSource configuration -->
+    <bean id="baseDataSource" class="org.apache.commons.dbcp.BasicDataSource" abstract="true" destroy-method="close"
+          lazy-init="true">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="maxActive" value="20"/>
+        <property name="maxIdle" value="20"/>
+        <property name="minIdle" value="5"/>
+        <property name="initialSize" value="1"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="timeBetweenEvictionRunsMillis" value="5000"/>
+        <property name="numTestsPerEvictionRun" value="20"/>
+    </bean>
+
+    <!-- DBCP config -->
+    <bean id="targetDataSource" parent="baseDataSource" lazy-init="true">
+        <property name="url" value="${jdbc.url}"/>
+    </bean>
+
+    <bean id="lazyConnectionDataSource" class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
+        <property name="targetDataSource" ref="targetDataSource"/>
+    </bean>
+
+    <!-- 数据库读写分离并支持多从负载均衡 -->
+    <bean id="routingDataSource" class="com.jd.dao.datasource.RoutingDataSource">
+        <property name="masterDataSource" ref="lazyConnectionDataSource"/>
+        <property name="slaveDataSoures">
+            <list>
+                <ref bean="lazyConnectionDataSource"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 配置事务管理器 -->
+    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="routingDataSource"/>
+    </bean>
+
+    <!-- 集成Mybatis -->
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="routingDataSource"/>
+        <property name="configLocation" value="classpath:sqlMapConfig.xml"/>
+    </bean>
+
+    <bean id="sessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sessionFactory"/>
+    </bean>
+    <bean id="batchSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sessionFactory"/>
+        <constructor-arg index="1" value="BATCH"/>
+    </bean>
+</beans>

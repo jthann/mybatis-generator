@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
+    <!--
     <output>D:\Framework\mybatis-generator\target</output>
+    -->
+    <output>D:\Framework\mybatis-generator\src\main\java\temp</output>
     <templates>
         <item>
             <name>SqlMapper.xml</name>
