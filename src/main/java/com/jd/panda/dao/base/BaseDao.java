@@ -18,8 +18,8 @@ public abstract class BaseDao<T, KEY extends Serializable> extends MyBatisSuppor
     private static final String DEFAULT_DELETE_ARRAY_KEY = "deleteByArrayKey";
     private static final String DEFAULT_DELETE_CONDITION = "deleteByCondition";
     private static final String DEFAULT_SELECT_ARRAY_KEY = "selectEntryArray";
-    private static final String DEFAULT_SELECT_CONDITION = "selectEntryList";
-    private static final String DEFAULT_SELECT_CONDITION_COUNT = "selectEntryListCount";
+    private static final String DEFAULT_SELECT_CONDITION = "SELECT-LIST";
+    private static final String DEFAULT_SELECT_CONDITION_COUNT = "COUNT";
 
     @Resource
     private SqlSessionTemplate sqlSessionTemplate;
@@ -36,7 +36,7 @@ public abstract class BaseDao<T, KEY extends Serializable> extends MyBatisSuppor
     public abstract String getNameSpace(String statementId);
 
 
-    public int insertEntry(T... t) {
+    public int insert(T... t) {
         int result = 0;
         if (t == null || t.length <= 0) {
             return result;
@@ -49,9 +49,9 @@ public abstract class BaseDao<T, KEY extends Serializable> extends MyBatisSuppor
         return result;
     }
 
-    public int insertEntryCreateId(T t) {
+    public int insertAndFetchId(T t) {
         @SuppressWarnings("unchecked")
-        int result = this.insertEntry(t);
+        int result = this.insert(t);
         if (result > 0) {
             Integer id = select(getNameSpace(DEFAULT_INSERT_LAST_SEQUENCE_KEY), null);
             if (id != null && id > 0) {
@@ -78,27 +78,27 @@ public abstract class BaseDao<T, KEY extends Serializable> extends MyBatisSuppor
         return this.update(getNameSpace(DEFAULT_UPDATE_KEY), t);
     }
 
-    public T selectEntry(KEY key) {
+    public T select(KEY key) {
         @SuppressWarnings("unchecked")
-        List<T> list = this.selectEntryList(key);
+        List<T> list = this.selectList(key);
         if (list != null && list.size() > 0) {
             return list.get(0);
         }
         return null;
     }
 
-    public List<T> selectEntryList(KEY... key) {
+    public List<T> selectList(KEY... key) {
         if (key == null || key.length <= 0) {
             return null;
         }
         return this.selectList(getNameSpace(DEFAULT_SELECT_ARRAY_KEY), key);
     }
 
-    public List<T> selectEntryList(T t) {
+    public List<T> selectList(T t) {
         return this.selectList(getNameSpace(DEFAULT_SELECT_CONDITION), t);
     }
 
-    public Integer selectEntryListCount(T t) {
+    public Integer selectListCount(T t) {
         return this.select(getNameSpace(DEFAULT_SELECT_CONDITION_COUNT), t);
     }
 }

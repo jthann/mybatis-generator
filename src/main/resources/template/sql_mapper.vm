@@ -82,7 +82,7 @@
             #end
         </trim>
         )
-        <selectKey resultType="java.lang.Long" keyProperty="$primaryName">
+        <selectKey resultType="${primaryFieldType}" keyProperty="$primaryName">
             SELECT last_insert_id() AS ID FROM $tableName LIMIT 1
         </selectKey>
     </insert>

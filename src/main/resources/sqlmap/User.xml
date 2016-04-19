@@ -80,7 +80,7 @@
             <if test="deleted!=null">#{deleted}</if>
         </trim>
         )
-        <selectKey resultType="java.lang.Long" keyProperty="id">
+        <selectKey resultType="java.lang.Integer" keyProperty="id">
             SELECT last_insert_id() AS ID FROM user LIMIT 1
         </selectKey>
     </insert>

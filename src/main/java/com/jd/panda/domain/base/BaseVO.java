@@ -7,18 +7,18 @@ import java.util.Date;
  */
 public class BaseVO extends BaseQuery {
 
-    private Long id;
+    private Integer id;
     private String creator;
     private Date gmtCreated;
     private String modifier;
     private Date gmtModified;
     private Integer deleted;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

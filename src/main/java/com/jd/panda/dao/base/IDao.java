@@ -11,7 +11,7 @@ public interface IDao<T, KEY extends Serializable> {
      * @param t
      * @return 影响条数
      */
-    int insertEntry(T... t);
+    int insert(T... t);
 
     /**
      * 添加对象并设置ID到对象上(需开启事务)
@@ -19,7 +19,7 @@ public interface IDao<T, KEY extends Serializable> {
      * @param t
      * @return 影响条数
      */
-    int insertEntryCreateId(T t);
+    int insertAndFetchId(T t);
 
     /**
      * 删除对象,主键
@@ -51,7 +51,7 @@ public interface IDao<T, KEY extends Serializable> {
      * @param key
      * @return
      */
-    T selectEntry(KEY key);
+    T select(KEY key);
 
     /**
      * 查询对象,条件主键数组
@@ -59,7 +59,7 @@ public interface IDao<T, KEY extends Serializable> {
      * @param key
      * @return
      */
-    List<T> selectEntryList(KEY... key);
+    List<T> selectList(KEY... key);
 
     /**
      * 查询对象,只要不为NULL与空则为条件
@@ -67,7 +67,7 @@ public interface IDao<T, KEY extends Serializable> {
      * @param t
      * @return
      */
-    List<T> selectEntryList(T t);
+    List<T> selectList(T t);
 
     /**
      * 查询对象总数
@@ -75,5 +75,6 @@ public interface IDao<T, KEY extends Serializable> {
      * @param t
      * @return
      */
-    Integer selectEntryListCount(T t);
+    Integer selectListCount(T t);
+    
 }
