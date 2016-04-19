@@ -9,8 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-###set( $baseFields = "id,creator,gmtCreated,modifier,gmtModified,deleted,")
-#set( $baseFields = "")
+#set( $baseFields = "id,creator,gmtCreated,modifier,gmtModified,deleted,")
 
 /**
 *
@@ -18,7 +17,7 @@ import java.util.List;
 * @author HanJunTao
 *
 */
-public class ${pojoName} implements Serializable{
+public class ${pojoName} extends BaseVO{
 #foreach($f in $fields)
     #set($comment = $f.comment)
     #set($type = $util.thinType($f.type))

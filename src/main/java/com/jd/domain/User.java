@@ -1,27 +1,19 @@
 package com.jd.domain;
 
-import java.io.Serializable;
+import com.jd.domain.base.BaseVO;
+
 import java.util.Date;
 
 /**
  * Created by hanjuntao on 2016/4/18.
  */
-public class User implements Serializable {
+public class User extends BaseVO {
 
-    private Integer id;
     private String name;
     private String userPin;
     private Date birthDay;
     private Integer age;
 
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

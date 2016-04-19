@@ -33,8 +33,8 @@
     </sql>
     <!-- 分页条件 -->
     <sql id="PAGING">
-        <if test="offset!=null and limit!=null">
-            LIMIT #{offset},#{limit}
+        <if test="startIndex!=null and pageSize!=null">
+            LIMIT #{startIndex},#{pageSize}
         </if>
     </sql>
 
@@ -52,7 +52,7 @@
         ]]>
     </sql>
     <!-- 单条添加 -->
-    <insert id="INSERT" parameterType="dto">
+    <insert id="INSERT" parameterType="${lowerFirstPojoName}">
         INSERT INTO $tableName
         (
         <trim suffixOverrides=",">
@@ -185,7 +185,7 @@
         <include refid="CONDITION"/>
     </select>
     <!-- 分页查询 -->
-    <select id="SELECT-PAGING-LIST" resultType="${lowerFirstPojoName}" parameterType="${lowerFirstPojoName}">
+    <select id="SELECT-PAGING-LIST" resultType="${lowerFirstPojoName}" parameterType="${lowerFirstPojoName}" resultMap="${lowerFirstPojoName}Map">
         SELECT
         <include refid="ALL-FIELDS"/>
         FROM $tableName
@@ -197,7 +197,7 @@
         <include refid="CONDITION"/>
     </select>
     <!--根据ID列表查询-->
-    <select id="SELECT-IN-LIST" resultType="${lowerFirstPojoName}" parameterType="list">
+    <select id="SELECT-IN-LIST" resultType="${lowerFirstPojoName}" parameterType="list" resultMap="${lowerFirstPojoName}Map">
         SELECT
         <include refid="ALL-FIELDS"/>
         FROM $tableName
