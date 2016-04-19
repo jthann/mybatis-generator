@@ -1,6 +1,6 @@
-package com.jd.domain;
+package com.jd.panda.domain;
 
-import com.jd.domain.base.BaseVO;
+import com.jd.panda.domain.base.BaseVO;
 
 import java.util.Date;
 

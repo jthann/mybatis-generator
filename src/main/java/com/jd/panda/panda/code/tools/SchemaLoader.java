@@ -1,4 +1,4 @@
-package com.jd.panda.code.tools;
+package com.jd.panda.panda.code.tools;
 
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.logging.Log;

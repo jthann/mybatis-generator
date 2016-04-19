@@ -1,4 +1,4 @@
-package com.jd.dao.base;
+package com.jd.panda.dao.base;
 
 import java.io.Serializable;
 import java.util.List;

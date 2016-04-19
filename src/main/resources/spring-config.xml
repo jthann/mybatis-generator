@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+
+    <bean id="propertyPlaceholder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:production.properties</value>
+            </list>
+        </property>
+    </bean>
 
     <!-- BasicDataSource configuration -->
     <bean id="baseDataSource" class="org.apache.commons.dbcp.BasicDataSource" abstract="true" destroy-method="close"
@@ -23,12 +32,23 @@
         <property name="url" value="${jdbc.url}"/>
     </bean>
 
+
     <bean id="lazyConnectionDataSource" class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
         <property name="targetDataSource" ref="targetDataSource"/>
     </bean>
 
+    <bean id="dataSource" class="com.jd.panda.dao.datasource.DatabaseCluster">
+        <property name="targetDataSources">
+            <util:map key-type="java.lang.String">
+                <entry key="1" value-ref="lazyConnectionDataSource" />
+            </util:map>
+        </property>
+        <property name="defaultTargetDataSource" ref="lazyConnectionDataSource" />
+        <property name="dbInUse" value="1" />
+    </bean>
+
     <!-- 数据库读写分离并支持多从负载均衡 -->
-    <bean id="routingDataSource" class="com.jd.dao.datasource.RoutingDataSource">
+    <bean id="routingDataSource" class="com.jd.panda.dao.datasource.RoutingDataSource">
         <property name="masterDataSource" ref="lazyConnectionDataSource"/>
         <property name="slaveDataSoures">
             <list>
@@ -42,9 +62,10 @@
         <property name="dataSource" ref="routingDataSource"/>
     </bean>
 
+
     <!-- 集成Mybatis -->
     <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="routingDataSource"/>
+        <property name="dataSource" ref="dataSource"/>
         <property name="configLocation" value="classpath:sqlMapConfig.xml"/>
     </bean>
 

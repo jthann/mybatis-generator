@@ -1,4 +1,4 @@
-package com.jd.dao.base;
+package com.jd.panda.dao.base;
 
 import org.mybatis.spring.SqlSessionTemplate;
 

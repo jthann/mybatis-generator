@@ -1,4 +1,4 @@
-package com.jd.domain.base;
+package com.jd.panda.domain.base;
 
 import com.alibaba.fastjson.annotation.JSONField;
 

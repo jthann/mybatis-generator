@@ -1,7 +1,7 @@
-package com.jd.dao;
+package com.jd.panda.dao;
 
-import com.jd.dao.base.IDao;
-import com.jd.domain.User;
+import com.jd.panda.dao.base.IDao;
+import com.jd.panda.domain.User;
 
 /**
  * Created by hanjuntao on 2016/4/18.

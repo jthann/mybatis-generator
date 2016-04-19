@@ -1,4 +1,4 @@
-package com.jd.panda.code.tools;
+package com.jd.panda.panda.code.tools;
 
 public class FieldVO {
 	private String name;

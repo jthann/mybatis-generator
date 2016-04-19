@@ -1,4 +1,4 @@
-package com.jd.dao.datasource;
+package com.jd.panda.dao.datasource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ import java.util.List;
  * 读写分离的数据源<br/>
  * 可配置一个write和多个read-only的数据源,并提供对read-only数据源做负载均衡的接口
  */
-public abstract class AbstractRoutingDataSource extends AbstractDataSource implements InitializingBean {
+public abstract class AbstractMyRoutingDataSource extends AbstractDataSource implements InitializingBean {
     protected final Logger LOGGER = LoggerFactory.getLogger(getClass());
     protected static final String READ_ONLY = "read-only";
 

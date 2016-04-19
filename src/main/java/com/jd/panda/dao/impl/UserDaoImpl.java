@@ -1,8 +1,8 @@
-package com.jd.dao.impl;
+package com.jd.panda.dao.impl;
 
-import com.jd.dao.UserDao;
-import com.jd.dao.base.BaseDao;
-import com.jd.domain.User;
+import com.jd.panda.dao.UserDao;
+import com.jd.panda.dao.base.BaseDao;
+import com.jd.panda.domain.User;
 import org.springframework.stereotype.Component;
 
 /**

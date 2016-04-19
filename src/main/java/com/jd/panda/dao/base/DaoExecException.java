@@ -1,4 +1,4 @@
-package com.jd.dao.base;
+package com.jd.panda.dao.base;
 
 public class DaoExecException extends RuntimeException {
     private static final long serialVersionUID = 1L;

@@ -3,9 +3,9 @@
 #set($lowerFirstPojoName = $util.lowerCaseFirst(${pojoName}))
 package $pkgName;
 
-import com.jd.dao.UserDao;
-import com.jd.dao.base.BaseDao;
-import com.jd.domain.User;
+import UserDao;
+import BaseDao;
+import User;
 import org.springframework.stereotype.Component;
 
 /**

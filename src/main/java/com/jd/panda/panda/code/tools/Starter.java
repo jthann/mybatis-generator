@@ -1,4 +1,4 @@
-package com.jd.panda.code.tools;
+package com.jd.panda.panda.code.tools;
 
 /**
  * Created by hanjuntao on 2016/4/18.

@@ -1,4 +1,4 @@
-package com.jd.dao.datasource;
+package com.jd.panda.dao.datasource;
 
 import org.springframework.core.NamedThreadLocal;
 
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class RoutingDataSource extends AbstractRoutingDataSource {
+public class RoutingDataSource extends AbstractMyRoutingDataSource {
     private final static NamedThreadLocal<String> keys = new NamedThreadLocal<String>("RoutingDataSource");
     private AtomicInteger count = new AtomicInteger(0);
 
