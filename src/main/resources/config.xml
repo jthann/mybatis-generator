@@ -3,12 +3,12 @@
     <!--
     <output>D:\Framework\mybatis-generator\target</output>
     -->
-    <output>D:\Framework\mybatis-generator\src\main\java\temp</output>
+    <output>D:\Framework\mybatis-generator\src\main\java\</output>
     <templates>
         <item>
             <name>SqlMapper.xml</name>
             <template>template/sql_mapper.vm</template>
-            <package>com.jd.jdc.dao.mapper</package>
+            <package></package>
             <fileSuffix>.xml</fileSuffix>
         </item>
         <item>
