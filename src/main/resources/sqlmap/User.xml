@@ -84,6 +84,14 @@
             SELECT last_insert_id() AS ID FROM user LIMIT 1
         </selectKey>
     </insert>
+
+    <!-- 返回插入的编号,在事务开启状态下有效 -->
+    <select id="LAST-SEQUENCE-ID" resultType="int">
+        <![CDATA[
+        SELECT last_insert_id() AS ID FROM user LIMIT 1
+        ]]>
+    </select>
+
     <!-- 批量添加 -->
     <insert id="BATCH-INSERT" parameterType="java.util.List">
         <foreach collection="list" item="item" index="index" separator=";" close=";">
@@ -121,6 +129,13 @@
     <delete id="DELETE" parameterType="user">
         DELETE FROM user
         <include refid="CONDITION"/>
+    </delete>
+    <delete id="DELETE-BY-KEY-ARRAY" parameterType="java.lang.reflect.Array">
+        DELETE FROM user
+        <![CDATA[WHERE user.id IN]]>
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            <![CDATA[#{id}]]>
+        </foreach>
     </delete>
     <!-- 逻辑删除 -->
     <update id="UPDATE-DELETED" parameterType="user">
@@ -167,6 +182,7 @@
             WHERE id = #{item.id}
         </foreach>
     </update>
+
     <!-- 根据主键查询单条记录 -->
     <select id="SELECT" resultType="user" parameterType="java.lang.Integer">
         SELECT
@@ -180,6 +196,17 @@
         FROM user
         <include refid="CONDITION"/>
     </select>
+
+    <select id="SELECT-LIST-BY-KEY-ARRAY" resultType="user" parameterType="java.lang.reflect.Array">
+        SELECT
+        <include refid="ALL-FIELDS"/>
+        FROM user
+        <![CDATA[WHERE user.id IN]]>
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            <![CDATA[#{id}]]>
+        </foreach>
+    </select>
+
     <!-- 分页查询 -->
     <select id="SELECT-PAGING-LIST" resultType="user" parameterType="user" resultMap="userMap">
         SELECT

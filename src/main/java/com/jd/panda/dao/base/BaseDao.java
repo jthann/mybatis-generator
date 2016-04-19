@@ -12,14 +12,13 @@ import java.util.List;
 public abstract class BaseDao<T, KEY extends Serializable> extends MyBatisSupport implements IDao<T, KEY> {
 
 
-    private static final String DEFAULT_INSERT_KEY = "INSERT";
-    private static final String DEFAULT_UPDATE_KEY = "UPDATE";
-    private static final String DEFAULT_INSERT_LAST_SEQUENCE_KEY = "lastSequence";
-    private static final String DEFAULT_DELETE_ARRAY_KEY = "deleteByArrayKey";
-    private static final String DEFAULT_DELETE_CONDITION = "deleteByCondition";
-    private static final String DEFAULT_SELECT_ARRAY_KEY = "selectEntryArray";
-    private static final String DEFAULT_SELECT_CONDITION = "SELECT-LIST";
-    private static final String DEFAULT_SELECT_CONDITION_COUNT = "COUNT";
+    private static final String INSERT_KEY = "INSERT";
+    private static final String LAST_SEQUENCE_KEY = "LAST-SEQUENCE-ID";
+    private static final String DELETE_BY_CONDITION_KEY = "DELETE";
+    private static final String UPDATE_KEY = "UPDATE";
+    private static final String SELECT_KEY = "SELECT";
+    private static final String SELECT_LIST_BY_CONDITION = "SELECT-LIST";
+    private static final String SELECT_LIST_COUNT_BY_CONDITION = "COUNT";
 
     @Resource
     private SqlSessionTemplate sqlSessionTemplate;
@@ -43,7 +42,7 @@ public abstract class BaseDao<T, KEY extends Serializable> extends MyBatisSuppor
         }
         for (T o : t) {
             if (o != null) {
-                result += this.insert(getNameSpace(DEFAULT_INSERT_KEY), o);
+                result += this.insert(getNameSpace(INSERT_KEY), o);
             }
         }
         return result;
@@ -53,7 +52,7 @@ public abstract class BaseDao<T, KEY extends Serializable> extends MyBatisSuppor
         @SuppressWarnings("unchecked")
         int result = this.insert(t);
         if (result > 0) {
-            Integer id = select(getNameSpace(DEFAULT_INSERT_LAST_SEQUENCE_KEY), null);
+            Integer id = select(getNameSpace(LAST_SEQUENCE_KEY), null);
             if (id != null && id > 0) {
                 try {
                     Class<?> clz = t.getClass();
@@ -66,39 +65,26 @@ public abstract class BaseDao<T, KEY extends Serializable> extends MyBatisSuppor
         return result;
     }
 
-    public int deleteByKey(KEY... key) {
-        return this.delete(getNameSpace(DEFAULT_DELETE_ARRAY_KEY), key);
+
+    public int delete(T t) {
+        return this.delete(getNameSpace(DELETE_BY_CONDITION_KEY), t);
     }
 
-    public int deleteByKey(T t) {
-        return this.delete(getNameSpace(DEFAULT_DELETE_CONDITION), t);
-    }
-
-    public int updateByKey(T t) {
-        return this.update(getNameSpace(DEFAULT_UPDATE_KEY), t);
+    public int update(T t) {
+        return this.update(getNameSpace(UPDATE_KEY), t);
     }
 
     public T select(KEY key) {
         @SuppressWarnings("unchecked")
-        List<T> list = this.selectList(key);
-        if (list != null && list.size() > 0) {
-            return list.get(0);
-        }
-        return null;
-    }
-
-    public List<T> selectList(KEY... key) {
-        if (key == null || key.length <= 0) {
-            return null;
-        }
-        return this.selectList(getNameSpace(DEFAULT_SELECT_ARRAY_KEY), key);
+        T t = this.getSqlTemplate(false, true).selectOne(getNameSpace(SELECT_KEY), key);
+        return t;
     }
 
     public List<T> selectList(T t) {
-        return this.selectList(getNameSpace(DEFAULT_SELECT_CONDITION), t);
+        return this.selectList(getNameSpace(SELECT_LIST_BY_CONDITION), t);
     }
 
-    public Integer selectListCount(T t) {
-        return this.select(getNameSpace(DEFAULT_SELECT_CONDITION_COUNT), t);
+    public Integer selectCount(T t) {
+        return this.select(getNameSpace(SELECT_LIST_COUNT_BY_CONDITION), t);
     }
 }

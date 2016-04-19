@@ -44,7 +44,6 @@ public class UnitTest {
             user.setAge(random.nextInt(100));
             user.setBirthday(new Date());
             user.setCreator("hanjuntao");
-            user.setCreator("hjt");
             userDao.insert(user);
         }
     }

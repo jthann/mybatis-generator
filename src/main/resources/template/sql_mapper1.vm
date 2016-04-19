@@ -92,59 +92,12 @@
         <![CDATA[SELECT last_insert_id() AS ID FROM $tableName LIMIT 1]]>
     </select>
 
-    <!-- 批量添加 -->
-    <insert id="BATCH-INSERT" parameterType="java.util.List">
-        <foreach collection="list" item="item" index="index" separator=";" close=";">
-            INSERT INTO $tableName
-            (
-            <trim suffixOverrides=",">
-                #foreach($f in $fields)
-                    #set($type = $f.type)
-                    #set($name = $f.name)
-                    #set($fieldName    =    $f.fieldName)
-                    #if($type == "java.lang.String")
-                        <if test="item.$name!=null and item.$name!=''">$fieldName#if($velocityCount!=$fields.size())
-                            ,#end</if>
-                    #else
-                        <if test="item.$name!=null">$fieldName#if($velocityCount!=$fields.size()),#end</if>
-                    #end
-                #end
-            </trim>
-            )
-            VALUES
-            (
-            <trim suffixOverrides=",">
-                #foreach($f  in $fields)
-                    #set($type = $f.type)
-                    #set($name = $f.name)
-                    #if($type == "java.lang.String")
-                        <if test="item.$name!=null and item.$name!=''">#{item.$name}#if($velocityCount!=$fields.size())
-                            ,#end</if>
-                    #else
-                        <if test="item.$name!=null">#{item.$name}#if($velocityCount!=$fields.size()),#end</if>
-                    #end
-                #end
-            </trim>
-            )
-        </foreach>
-    </insert>
     <!-- 删除 -->
     <delete id="DELETE" parameterType="${lowerFirstPojoName}">
         DELETE FROM $tableName
         <include refid="CONDITION"/>
     </delete>
-    <delete id="DELETE-BY-KEY-ARRAY" parameterType="java.lang.reflect.Array">
-        DELETE FROM $tableName
-        <![CDATA[WHERE ${tableName}.${primaryField} IN]]>
-        <foreach collection="array" item="${primaryField}" open="(" separator="," close=")">
-            <![CDATA[#{id}]]>
-        </foreach>
-    </delete>
-    <!-- 逻辑删除 -->
-    <update id="UPDATE-DELETED" parameterType="${lowerFirstPojoName}">
-        UPDATE  $tableName SET deleted=1
-        <include refid="CONDITION"/>
-    </update>
+
     <!-- 根据主键更新 -->
     <update id="UPDATE" parameterType="${lowerFirstPojoName}">
         UPDATE $tableName
@@ -163,27 +116,6 @@
         </set>
         WHERE $primaryField = #{$primaryName}
     </update>
-    <!-- 批量更新 -->
-    <update id="BATCH-UPDATE" parameterType="java.util.List">
-        <foreach collection="list" item="item" index="index" separator=";" close=";">
-            UPDATE $tableName
-            <set>
-                #foreach($f  in $fields)
-                    #set($type = $f.type)
-                    #set($name = $f.name)
-                    #set($fieldName = $f.fieldName)
-                    #if($type == "java.lang.String")
-                        <if test="item.$name!=null and item.$name!=''">$fieldName =
-                            #{item.$name}#if($velocityCount!=$fields.size()),#end</if>
-                    #else
-                        <if test="item.$name!=null">$fieldName = #{item.$name}#if($velocityCount!=$fields.size())
-                            ,#end</if>
-                    #end
-                #end
-            </set>
-            WHERE $primaryField = #{item.$primaryName}
-        </foreach>
-    </update>
 
     <!-- 根据主键查询单条记录 -->
     <select id="SELECT" resultType="${lowerFirstPojoName}" parameterType="${primaryFieldType}">
@@ -191,26 +123,9 @@
         <include refid="ALL-FIELDS"/>
         FROM $tableName where $primaryField = #{$primaryName}
     </select>
-    <!-- 根据条件查询 -->
+
+    <!-- 根据条件查询 分页查询 -->
     <select id="SELECT-LIST" resultType="${lowerFirstPojoName}" parameterType="${lowerFirstPojoName}">
-        SELECT
-        <include refid="ALL-FIELDS"/>
-        FROM $tableName
-        <include refid="CONDITION"/>
-    </select>
-
-    <select id="SELECT-LIST-BY-KEY-ARRAY" resultType="${lowerFirstPojoName}" parameterType="java.lang.reflect.Array">
-        SELECT
-        <include refid="ALL-FIELDS"/>
-        FROM $tableName
-        <![CDATA[WHERE ${tableName}.${primaryField} IN]]>
-        <foreach collection="array" item="${primaryField}" open="(" separator="," close=")">
-            <![CDATA[#{id}]]>
-        </foreach>
-    </select>
-
-    <!-- 分页查询 -->
-    <select id="SELECT-PAGING-LIST" resultType="${lowerFirstPojoName}" parameterType="${lowerFirstPojoName}" resultMap="${lowerFirstPojoName}Map">
         SELECT
         <include refid="ALL-FIELDS"/>
         FROM $tableName
@@ -221,14 +136,5 @@
         SELECT COUNT(*) FROM $tableName
         <include refid="CONDITION"/>
     </select>
-    <!--根据ID列表查询-->
-    <select id="SELECT-IN-LIST" resultType="${lowerFirstPojoName}" parameterType="list" resultMap="${lowerFirstPojoName}Map">
-        SELECT
-        <include refid="ALL-FIELDS"/>
-        FROM $tableName
-        WHERE $primaryName IN
-        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-    </select>
+
 </mapper>

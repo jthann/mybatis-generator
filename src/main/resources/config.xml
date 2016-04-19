@@ -7,7 +7,7 @@
     <templates>
         <item>
             <name>SqlMapper.xml</name>
-            <template>template/sql_mapper.vm</template>
+            <template>template/sql_mapper1.vm</template>
             <package></package>
             <fileSuffix>.xml</fileSuffix>
         </item>
