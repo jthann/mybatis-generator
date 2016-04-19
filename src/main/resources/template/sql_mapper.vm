@@ -4,7 +4,7 @@
     #set($primaryName = $util.camelize($primaryField))
     #set($lowerFirstPojoName = $util.lowerCaseFirst($pojoName))
 <mapper namespace="$pojoName">
-    <resultMap id="${pojoName}Map" type="${pkgName}.${pojoName}">
+    <resultMap id="${lowerFirstPojoName}Map" type="${lowerFirstPojoName}">
         #foreach($f    in $fields)
             #set($type = $f.type)
             #set($name = $f.name)
@@ -82,7 +82,7 @@
             #end
         </trim>
         )
-        <selectKey resultType="$primaryFieldType" keyProperty="$primaryName">
+        <selectKey resultType="java.lang.Long" keyProperty="$primaryName">
             SELECT last_insert_id() AS ID FROM $tableName LIMIT 1
         </selectKey>
     </insert>
@@ -172,7 +172,7 @@
         </foreach>
     </update>
     <!-- 根据主键查询单条记录 -->
-    <select id="SELECT" resultType="${lowerFirstPojoName}" parameterType="${pkType}">
+    <select id="SELECT" resultType="${lowerFirstPojoName}" parameterType="${primaryFieldType}">
         SELECT
         <include refid="ALL-FIELDS"/>
         FROM $tableName where $primaryField = #{$primaryName}

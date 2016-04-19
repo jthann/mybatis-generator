@@ -4,10 +4,6 @@ package ${pkgName};
 #foreach($type in $util.importType($fields))
 import $type;
 #end
-import java.io.Serializable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 #set( $baseFields = "id,creator,gmtCreated,modifier,gmtModified,deleted,")
 

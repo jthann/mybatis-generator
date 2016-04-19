@@ -1,8 +1,8 @@
 package com.jd.panda.dao.impl;
 
+import com.jd.jdc.domain.User;
 import com.jd.panda.dao.UserDao;
 import com.jd.panda.dao.base.BaseDao;
-import com.jd.panda.domain.User;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component("userDao")
 public class UserDaoImpl extends BaseDao<User, Integer> implements UserDao {
 
-    private static final String NAMESPACE = "com.jd.jdc.dao.User";
+    private static final String NAMESPACE = "User";
 
     @Override
     public String getNameSpace(String statementId) {

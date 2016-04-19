@@ -3,7 +3,7 @@
 "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <typeAliases>
-        <typeAlias type="com.jd.djc.man.domain.sys.User" alias="User" />
+        <typeAlias type="com.jd.jdc.domain.User" alias="user" />
     </typeAliases>
 
 </configuration>
