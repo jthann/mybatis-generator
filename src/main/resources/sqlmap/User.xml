@@ -92,56 +92,12 @@
         ]]>
     </select>
 
-    <!-- 批量添加 -->
-    <insert id="BATCH-INSERT" parameterType="java.util.List">
-        <foreach collection="list" item="item" index="index" separator=";" close=";">
-            INSERT INTO user
-            (
-            <trim suffixOverrides=",">
-                <if test="item.id!=null">id,</if>
-                <if test="item.name!=null and item.name!=''">name ,</if>
-                <if test="item.age!=null">age,</if>
-                <if test="item.birthday!=null">birthday,</if>
-                <if test="item.gmtModified!=null">gmt_modified,</if>
-                <if test="item.gmtCreated!=null">gmt_created,</if>
-                <if test="item.creator!=null and item.creator!=''">creator ,</if>
-                <if test="item.modifier!=null and item.modifier!=''">modifier ,</if>
-                <if test="item.deleted!=null">deleted</if>
-            </trim>
-            )
-            VALUES
-            (
-            <trim suffixOverrides=",">
-                <if test="item.id!=null">#{item.id},</if>
-                <if test="item.name!=null and item.name!=''">#{item.name} ,</if>
-                <if test="item.age!=null">#{item.age},</if>
-                <if test="item.birthday!=null">#{item.birthday},</if>
-                <if test="item.gmtModified!=null">#{item.gmtModified},</if>
-                <if test="item.gmtCreated!=null">#{item.gmtCreated},</if>
-                <if test="item.creator!=null and item.creator!=''">#{item.creator} ,</if>
-                <if test="item.modifier!=null and item.modifier!=''">#{item.modifier} ,</if>
-                <if test="item.deleted!=null">#{item.deleted}</if>
-            </trim>
-            )
-        </foreach>
-    </insert>
     <!-- 删除 -->
     <delete id="DELETE" parameterType="user">
         DELETE FROM user
         <include refid="CONDITION"/>
     </delete>
-    <delete id="DELETE-BY-KEY-ARRAY" parameterType="java.lang.reflect.Array">
-        DELETE FROM user
-        <![CDATA[WHERE user.id IN]]>
-        <foreach collection="array" item="id" open="(" separator="," close=")">
-            <![CDATA[#{id}]]>
-        </foreach>
-    </delete>
-    <!-- 逻辑删除 -->
-    <update id="UPDATE-DELETED" parameterType="user">
-        UPDATE user SET deleted=1
-        <include refid="CONDITION"/>
-    </update>
+
     <!-- 根据主键更新 -->
     <update id="UPDATE" parameterType="user">
         UPDATE user
@@ -158,30 +114,6 @@
         </set>
         WHERE id = #{id}
     </update>
-    <!-- 批量更新 -->
-    <update id="BATCH-UPDATE" parameterType="java.util.List">
-        <foreach collection="list" item="item" index="index" separator=";" close=";">
-            UPDATE user
-            <set>
-                <if test="item.id!=null">id = #{item.id} ,</if>
-                <if test="item.name!=null and item.name!=''">name =
-                    #{item.name},
-                </if>
-                <if test="item.age!=null">age = #{item.age} ,</if>
-                <if test="item.birthday!=null">birthday = #{item.birthday} ,</if>
-                <if test="item.gmtModified!=null">gmt_modified = #{item.gmtModified} ,</if>
-                <if test="item.gmtCreated!=null">gmt_created = #{item.gmtCreated} ,</if>
-                <if test="item.creator!=null and item.creator!=''">creator =
-                    #{item.creator},
-                </if>
-                <if test="item.modifier!=null and item.modifier!=''">modifier =
-                    #{item.modifier},
-                </if>
-                <if test="item.deleted!=null">deleted = #{item.deleted}</if>
-            </set>
-            WHERE id = #{item.id}
-        </foreach>
-    </update>
 
     <!-- 根据主键查询单条记录 -->
     <select id="SELECT" resultType="user" parameterType="java.lang.Integer">
@@ -189,26 +121,9 @@
         <include refid="ALL-FIELDS"/>
         FROM user where id = #{id}
     </select>
-    <!-- 根据条件查询 -->
+
+    <!-- 根据条件查询 分页查询 -->
     <select id="SELECT-LIST" resultType="user" parameterType="user">
-        SELECT
-        <include refid="ALL-FIELDS"/>
-        FROM user
-        <include refid="CONDITION"/>
-    </select>
-
-    <select id="SELECT-LIST-BY-KEY-ARRAY" resultType="user" parameterType="java.lang.reflect.Array">
-        SELECT
-        <include refid="ALL-FIELDS"/>
-        FROM user
-        <![CDATA[WHERE user.id IN]]>
-        <foreach collection="array" item="id" open="(" separator="," close=")">
-            <![CDATA[#{id}]]>
-        </foreach>
-    </select>
-
-    <!-- 分页查询 -->
-    <select id="SELECT-PAGING-LIST" resultType="user" parameterType="user" resultMap="userMap">
         SELECT
         <include refid="ALL-FIELDS"/>
         FROM user
@@ -219,14 +134,5 @@
         SELECT COUNT(*) FROM user
         <include refid="CONDITION"/>
     </select>
-    <!--根据ID列表查询-->
-    <select id="SELECT-IN-LIST" resultType="user" parameterType="list" resultMap="userMap">
-        SELECT
-        <include refid="ALL-FIELDS"/>
-        FROM user
-        WHERE id IN
-        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-    </select>
+
 </mapper>

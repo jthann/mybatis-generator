@@ -27,11 +27,22 @@ public class UnitTest {
     }
 
     static void test(){
-        testSelect();
+        testUpdate();
     }
-    static void testSelect(){
 
-        List<User> userList = userDao.selectList(new User());
+
+    static void testUpdate(){
+        User condition = new User();
+        condition.setId(1);
+        condition.setName("fdafdasfasdfasfs");
+        userDao.update(condition);
+    }
+
+    static void testSelect(){
+        User condition = new User();
+        condition.setStartIndex(100);
+        condition.setEndIndex(100+20);
+        List<User> userList = userDao.selectList(condition);
         System.out.println(userList.size());
     }
 
